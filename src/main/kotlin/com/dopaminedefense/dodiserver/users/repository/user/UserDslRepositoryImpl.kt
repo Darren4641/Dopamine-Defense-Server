@@ -55,17 +55,20 @@ class UserDslRepositoryImpl (
                 users.email,
                 users.name,
                 users.countryCode,
-                users.intervalTime,
+                users.interval,
                 users.level,
                 users.job,
                 users.image,
                 users.version,
                 users.isOnboarding,
                 users.shareStatus,
-                alarm.count()
+                alarm.count(),
+                friend.count(),
+                users.profileLink
             ))
         .from(users)
         .leftJoin(alarm).on(alarm.user().id.eq(users.id).and(alarm.isRead.eq(false))).fetchJoin()
+        .leftJoin(friend).on(friend.email.eq(email)).fetchJoin()
         .where(users.email.eq(email))
         .groupBy(users.id)
         .fetchOne()
@@ -85,7 +88,7 @@ class UserDslRepositoryImpl (
                 FriendDto::class.java,
                 friend.targetUser().id,
                 users.countryCode,
-                friend.targetUser().intervalTime,
+                friend.targetUser().interval,
                 friend.targetUser().name,
                 friend.targetUser().image,
                 friend.targetUser().level,

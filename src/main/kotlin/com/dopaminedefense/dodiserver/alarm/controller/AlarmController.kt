@@ -18,7 +18,7 @@ class AlarmController (
     val alarmService: AlarmService
 ) {
 
-    @SwaggerApiSuccess(summary = "Alarm 보기 (호출 시 isRead가 true로 바뀜)", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "Alarm 보기 (호출 시 isRead가 true로 바뀜) [List<AlarmDto>]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     """)
     @GetMapping("")
@@ -26,7 +26,7 @@ class AlarmController (
         return BaseResponse(data = alarmService.getAlarms(email))
     }
 
-    @SwaggerApiSuccess(summary = "Exceed 타임 때 전송할 알림 문구 불러오기 호출 시 lastSendTime값이 바뀜", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "Exceed 타임 때 전송할 알림 문구 불러오기 호출 시 lastSendTime값이 바뀜 [List<AlarmDto>]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     """)
     @GetMapping("/notification")

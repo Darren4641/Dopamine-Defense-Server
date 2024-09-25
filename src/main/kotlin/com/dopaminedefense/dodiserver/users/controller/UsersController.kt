@@ -18,7 +18,7 @@ class UsersController (
 ) {
 
 
-    @SwaggerApiSuccess(summary = "회원 가입", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "회원 가입 [SignUpReq, SignUpRes]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-100]: 이미 회원가입된 계정입니다.
     """)
@@ -27,7 +27,7 @@ class UsersController (
         return BaseResponse(data = usersService.saveIfEmailNotExists(signUpReq.toEntity()))
     }
 
-    @SwaggerApiSuccess(summary = "로그인", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "로그인 [SignInReq, SignInRes]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-02]: 일치하는 데이터가 없습니다.
     """)
@@ -36,7 +36,7 @@ class UsersController (
         return BaseResponse(data = usersService.signIn(signInReq))
     }
 
-    @SwaggerApiSuccess(summary = "로그아웃", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "회원 탈퇴", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-02]: 일치하는 데이터가 없습니다.
     """)
@@ -46,7 +46,7 @@ class UsersController (
         return BaseResponse(data = "")
     }
 
-    @SwaggerApiSuccess(summary = "온-보딩", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "온-보딩 [ProfileReq, ProfileRes]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-02]: 일치하는 데이터가 없습니다.
     """)
@@ -55,7 +55,7 @@ class UsersController (
         return BaseResponse(data = usersService.generateProfile(profileReq))
     }
 
-    @SwaggerApiSuccess(summary = "프로필 조회", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "프로필 조회 [ProfileRes]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-02]: 일치하는 데이터가 없습니다.
     """)

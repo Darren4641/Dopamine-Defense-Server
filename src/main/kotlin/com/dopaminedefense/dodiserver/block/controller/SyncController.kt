@@ -1,5 +1,6 @@
 package com.dopaminedefense.dodiserver.block.controller
 
+import com.dopaminedefense.dodiserver.block.dto.SyncBulkDto
 import com.dopaminedefense.dodiserver.block.dto.SyncReq
 import com.dopaminedefense.dodiserver.block.service.SyncService
 import com.dopaminedefense.dodiserver.common.annotation.SwaggerApiError
@@ -17,12 +18,12 @@ class SyncController(
 ) {
 
 
-    @SwaggerApiSuccess(summary = "Sync 데이터 삽입", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "Sync 데이터 삽입 [SyncReq, List<SyncBulkDto>]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-02]: 일치하는 데이터가 없습니다.
     """)
     @PostMapping("")
-    fun saveSync(@RequestBody @Valid syncReqs: SyncReq) : BaseResponse<*> {
+    fun saveSync(@RequestBody @Valid syncReqs: SyncReq) : BaseResponse<List<SyncBulkDto>> {
         return BaseResponse(data = syncService.saveSyncData(syncReqs))
     }
 

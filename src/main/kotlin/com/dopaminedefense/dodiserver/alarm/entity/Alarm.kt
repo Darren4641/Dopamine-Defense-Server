@@ -22,11 +22,14 @@ class Alarm (
     @Column(name = "is_send")
     val isSend: Boolean = false,
 
-    @Column(columnDefinition = "TEXT")
-    val data: String,
+    @Column(length = 100)
+    val sender: String,
 
     @Column(name = "send_date")
     val sendDate: String? = null,
+
+    @Column(name = "local_date")
+    var localDate : String,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

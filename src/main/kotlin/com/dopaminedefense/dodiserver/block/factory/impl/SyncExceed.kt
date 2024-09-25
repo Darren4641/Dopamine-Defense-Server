@@ -19,7 +19,7 @@ class SyncExceed (
                 // 0이 없으면 리스트의 마지막 인덱스를 사용
                 blockFlatList.size - 1
             } else {
-                if(blockFlatList.indexOf(0) - 1 <= syncData.intervalTime) {
+                if(blockFlatList.indexOf(0) - 1 <= syncData.interval) {
                     //0의 시작 인덱스가 interval보다 낮으면 0으로 초기화
                     block.detailedBlocks = DEFAULT_DETAIL_BLOCK
                     return block
@@ -28,7 +28,7 @@ class SyncExceed (
                     blockFlatList.indexOf(0) - 1
                 }
             }
-        var endIndex = syncData.intervalTime
+        var endIndex = syncData.interval
 
         while(endIndex-- > 0) {
             var index = startIndex--

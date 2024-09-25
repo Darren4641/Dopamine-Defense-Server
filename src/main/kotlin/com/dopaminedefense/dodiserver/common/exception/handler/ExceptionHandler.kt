@@ -33,7 +33,11 @@ class ExceptionHandler (
         ex : Exception
     ) : ResponseEntity<ExceptionMsg> {
 
-        ex.message?.let { slackService.sendSlackMessage(it) }
+        ex.message?.let {
+            if(!it.contains("No endpoint")) {
+                slackService.sendSlackMessage(it)
+            }
+        }
 
         throw ex
     }

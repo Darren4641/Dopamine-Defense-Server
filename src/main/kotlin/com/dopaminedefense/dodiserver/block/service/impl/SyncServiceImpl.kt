@@ -7,8 +7,7 @@ import com.dopaminedefense.dodiserver.block.repository.SyncRepository
 import com.dopaminedefense.dodiserver.block.service.SyncService
 import com.dopaminedefense.dodiserver.common.exception.DodiException
 import com.dopaminedefense.dodiserver.users.dto.CountryCode
-import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.convertUtcToLocalTime
-import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.toDateTime
+import com.dopaminedefense.dodiserver.users.dto.Interval
 import com.dopaminedefense.dodiserver.users.repository.user.UsersRepository
 import com.example.kopring.common.status.ResultCode
 import org.springframework.stereotype.Service
@@ -29,7 +28,7 @@ class SyncServiceImpl(
         syncReq.syncDto.forEach { syncData ->
             if(!syncBulkDtoMap.containsKey(syncData.utcDateTime) && !syncRepository.existsByTypeAndPickupAndCreatedDateAndUser_email(syncData.type, syncData.pickup, syncData.utcDateTime, user.email)) {
                 syncBulkDtoMap[syncData.utcDateTime] = SyncBulkDto(
-                    intervalTime = user.intervalTime!!,
+                    interval = Interval.fromValue(user.interval!!)!!,
                     pickup = syncData.pickup,
                     type = syncData.type,
                     isSync = false,

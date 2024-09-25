@@ -19,7 +19,7 @@ class BlockController(
     val blockService: BlockService
 ) {
 
-    @SwaggerApiSuccess(summary = "홈 화면 (블록 싱크 맞추기)", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "홈 화면 (블록 싱크 맞추기) [HomeRes]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-02]: 일치하는 데이터가 없습니다.
     """)
@@ -28,7 +28,7 @@ class BlockController(
         return BaseResponse(data = blockService.getHome(email))
     }
 
-    @SwaggerApiSuccess(summary = "캘린더 불러오기", implementation = BaseResponse::class)
+    @SwaggerApiSuccess(summary = "캘린더 불러오기 [CalendarRes]", implementation = BaseResponse::class)
     @SwaggerApiError(description = """
     [D-02]: 일치하는 데이터가 없습니다.
     """)

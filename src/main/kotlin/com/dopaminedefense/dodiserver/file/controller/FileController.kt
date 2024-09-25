@@ -61,7 +61,7 @@ class FileController(
         logger.info("Fetching image from S3 for file: $fileName")  // 메소드 호출 시마다 로그 출력
         val headers = HttpHeaders().apply {
             contentType = MediaType.IMAGE_JPEG // 필요에 따라 이미지 타입 변경 (예: IMAGE_PNG)
-            cacheControl = "public, max-age=${Duration.ofHours(1).seconds}" // 캐시 유효기간 설정 (7일)
+            cacheControl = "public, max-age=${Duration.ofMinutes(5).seconds}" // 캐시 유효기간 설정 (5분)
         }
 
         val fileBytes = fileService.getImage(fileName)

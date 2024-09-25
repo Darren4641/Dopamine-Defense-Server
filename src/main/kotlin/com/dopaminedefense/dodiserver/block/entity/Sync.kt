@@ -8,17 +8,17 @@ import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.convertUtc
 import com.dopaminedefense.dodiserver.users.entity.Users
 import com.fasterxml.jackson.annotation.JsonFormat
 import jakarta.persistence.*
+import org.hibernate.annotations.DynamicUpdate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
 
 
 @Entity
+@DynamicUpdate
 @EntityListeners(AuditingEntityListener::class)
 @Table(name = "sync")
 class Sync (
-    @Column(name = "interval_time")
-    val intervalTime: Int,
+    @Column(name = "`interval`")
+    val `interval`: Int,
 
     @Column(name = "pickup", length = 50)
     @Enumerated(EnumType.STRING)
@@ -39,7 +39,7 @@ class Sync (
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     val user: Users,
 
-) : BaseEntity() {
+    ) : BaseEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null

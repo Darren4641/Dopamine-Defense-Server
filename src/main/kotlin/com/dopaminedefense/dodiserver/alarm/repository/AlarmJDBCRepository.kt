@@ -22,11 +22,12 @@ class AlarmJDBCRepository (
                 "content," +
                 "is_read," +
                 "is_send," +
-                "data," +
+                "sender," +
+                "local_date," +
                 "created_date," +
                 "updated_date," +
                 "user_id)" +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
         jdbcTemplate.batchUpdate(query, object : BatchPreparedStatementSetter {
             val alarmList = alarmDtoMap.values.toList()
@@ -38,10 +39,11 @@ class AlarmJDBCRepository (
                 ps.setString(2, alarmData.content)
                 ps.setBoolean(3, false)
                 ps.setBoolean(4, false)
-                ps.setString(5, alarmData.data)
-                ps.setString(6, getTodayUtcDateTimeStr())
+                ps.setString(5, alarmData.sender)
+                ps.setString(6, alarmData.localDate)
                 ps.setString(7, getTodayUtcDateTimeStr())
-                ps.setLong(8, alarmData.friendId)
+                ps.setString(8, getTodayUtcDateTimeStr())
+                ps.setLong(9, alarmData.friendId)
             }
 
             override fun getBatchSize(): Int {

@@ -3,16 +3,11 @@ package com.dopaminedefense.dodiserver.users.entity
 import com.dopaminedefense.dodiserver.block.entity.Block
 import com.dopaminedefense.dodiserver.block.entity.Sync
 import com.dopaminedefense.dodiserver.common.entity.BaseEntity
-import com.dopaminedefense.dodiserver.users.dto.CountryCode
 import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getTodayUtcDateTimeStr
 import com.dopaminedefense.dodiserver.users.dto.ProfileReq
 import com.dopaminedefense.dodiserver.users.dto.UserStatus
 import jakarta.persistence.*
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.LocalDateTime
-import java.time.OffsetDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 
 @Entity
 @EntityListeners(AuditingEntityListener::class)
@@ -32,7 +27,7 @@ class Users (
     var name: String? = null,
 
     @Column(name = "interval_time")
-    var intervalTime: Int? = null,
+    var interval: Int? = null,
 
     @Column(name = "level")
     var level: Int? = null,
@@ -105,16 +100,16 @@ class Users (
         this.status = UserStatus.DELETE
     }
 
-    fun onBoarding(profileReq: ProfileReq, shareStatusStr: String) : Users {
+    fun onBoarding(profileReq: ProfileReq, shareStatusStr: String, deepLink: String?) : Users {
         name = profileReq.name
-        intervalTime = profileReq.intervalTime.value
+        interval = profileReq.interval.value
         level = profileReq.level.value
         job = profileReq.job
         image = profileReq.image
         version = profileReq.version
         isOnboarding = true
         shareStatus = shareStatusStr
-        profileLink = profileReq.profileLink
+        profileLink = deepLink
         return this
     }
 }

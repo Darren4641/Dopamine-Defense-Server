@@ -13,7 +13,7 @@ class SyncDodiAction (
         val blockFlatList = convertStringToList(block.detailedBlocks).toMutableList()
 
         var startIndex = blockFlatList.indexOf(0)
-        val endIndex = startIndex + syncData.intervalTime
+        val endIndex = startIndex + syncData.interval
         if(startIndex != -1) {
             while(startIndex < endIndex) {
                 blockFlatList[startIndex++] = BlockColor.Blue.value

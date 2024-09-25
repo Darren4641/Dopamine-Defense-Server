@@ -8,5 +8,7 @@ interface FriendRepository : JpaRepository<Friend, Long> {
 
     fun existsByEmailAndTargetUser_Id(email: String, friendId: Long) : Boolean
 
+    fun findByEmailAndTargetUser_Id(email: String, friendId: Long) : Friend?
+
     fun findByEmailAndTargetUser_Email(email: String, friendEmail: String) : Friend?
 }

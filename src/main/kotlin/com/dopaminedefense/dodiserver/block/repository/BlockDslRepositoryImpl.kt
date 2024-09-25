@@ -20,7 +20,7 @@ class BlockDslRepositoryImpl(
     override fun getWelcomeMessage(email: String, category: Category) : Operation {
         return queryFactory.select(operation)
             .from(operation)
-            .leftJoin(users).on(users.email.eq(email))
+            .leftJoin(users).on(users.email.eq(email)).fetchJoin()
             .where(operation.category.eq(category)
                 .and(operation.languageCode.contains(users.countryCode.stringValue())))
             .orderBy(Expressions.numberTemplate(Double::class.java, "function('RAND')").asc())
@@ -31,7 +31,7 @@ class BlockDslRepositoryImpl(
     override fun getBlock(email: String, date: String) : Block? {
         return queryFactory.select(block)
             .from(block)
-            .leftJoin(users).on(users.id.eq(block.user().id))
+            .leftJoin(users).on(users.id.eq(block.user().id)).fetchJoin()
             .where(users.email.eq(email).and(block.localDate.contains(date)))
             .orderBy(block.createdDate.desc())
             .fetchOne()
@@ -40,7 +40,7 @@ class BlockDslRepositoryImpl(
     override fun getBlockOfMonthByCalculatedIsFalse(email: String, date: String) : List<Block> {
         return queryFactory.select(block)
             .from(block)
-            .leftJoin(users).on(users.id.eq(block.user().id))
+            .leftJoin(users).on(users.id.eq(block.user().id)).fetchJoin()
             .where(users.email.eq(email).and(block.createdDate.contains(date)).and(block.calculated.eq(false)))
             .orderBy(block.createdDate.asc())
             .fetch()

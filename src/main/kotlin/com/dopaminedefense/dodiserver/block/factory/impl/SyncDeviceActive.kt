@@ -25,7 +25,7 @@ class SyncDeviceActive (
                 // Current = ON, Last = ON
                 val duration = getTimeDifferenceInSeconds(lastDeviceActiveSync.createdDate, syncData.createdDate)
                 val offSync = Sync(
-                    intervalTime = syncData.intervalTime,
+                    interval = syncData.interval,
                     pickup = Power.OFF,
                     type = SyncType.DEVICE_ACTIVE,
                     isSync = true,
@@ -51,7 +51,7 @@ class SyncDeviceActive (
                 // Current = OFF, Last = OFF
                 val duration = getTimeDifferenceInSeconds(lastDeviceActiveSync.createdDate, syncData.createdDate)
                 val offSync = Sync(
-                    intervalTime = syncData.intervalTime,
+                    interval = syncData.interval,
                     pickup = Power.ON,
                     type = SyncType.DEVICE_ACTIVE,
                     isSync = true,

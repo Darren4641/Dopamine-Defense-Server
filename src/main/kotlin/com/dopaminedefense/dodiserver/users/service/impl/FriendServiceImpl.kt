@@ -9,6 +9,7 @@ import com.dopaminedefense.dodiserver.alarm.repository.AlarmRepository
 import com.dopaminedefense.dodiserver.common.exception.DodiException
 import com.dopaminedefense.dodiserver.users.dto.*
 import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.convertLocalToUtcDate
+import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getTodayLocalDateTimeStr
 import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getTodayUtcDateTimeStr
 import com.dopaminedefense.dodiserver.users.entity.Friend
 import com.dopaminedefense.dodiserver.users.repository.user.FriendRepository
@@ -60,7 +61,8 @@ class FriendServiceImpl (
             isRead = false,
             isSend = true,
             user = friend,
-            data = user.email
+            sender = user.email,
+            localDate = getTodayLocalDateTimeStr(CountryCode.valueOf(friend.countryCode!!))
         ))
         return AddFriendRes(FriendStatus.INVITED, addFriend.friendEmail)
     }
@@ -92,12 +94,14 @@ class FriendServiceImpl (
         var alarmBulkDtoMap = emptyMap<Long, AlarmBulkDto>().toMutableMap()
 
         sendMessageReq.friendId.forEach{ friendId ->
-            if(friendRepository.existsByEmailAndTargetUser_Id(user.email, friendId)) {
+            val friend = friendRepository.findByEmailAndTargetUser_Id(user.email, friendId)
+            if(friend != null) {
                 alarmBulkDtoMap[friendId] = AlarmBulkDto(
                     friendId = friendId,
                     title = AlarmType.MESSAGE.name,
                     content = sendMessageReq.context,
-                    data = user.name
+                    sender = user.email,
+                    localDate = getTodayLocalDateTimeStr(CountryCode.valueOf(friend.targetUser.countryCode!!))
                 )
             }
         }

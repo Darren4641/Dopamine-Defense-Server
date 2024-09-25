@@ -1,5 +1,6 @@
 package com.dopaminedefense.dodiserver.block.service.impl
 
+import com.dopaminedefense.dodiserver.alarm.repository.AlarmRepository
 import com.dopaminedefense.dodiserver.block.dto.BlockOfCalendar
 import com.dopaminedefense.dodiserver.block.dto.CalendarRes
 import com.dopaminedefense.dodiserver.block.dto.HomeRes
@@ -15,12 +16,8 @@ import com.dopaminedefense.dodiserver.common.exception.DodiException
 import com.dopaminedefense.dodiserver.system.dto.Category
 import com.dopaminedefense.dodiserver.users.dto.CountryCode
 import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.dateFormatter
-import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.dateTimeFormatter
 import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getTodayLocalDateStr
-import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getTodayUtcDateStr
 import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getYesterdayLocalDateStr
-import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getYesterdayUtcDateStr
-import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.getYesterdayUtcDateTimeStr
 import com.dopaminedefense.dodiserver.users.dto.CountryCode.Companion.toDateTime
 import com.dopaminedefense.dodiserver.users.entity.Users
 import com.dopaminedefense.dodiserver.users.repository.user.UsersRepository
@@ -34,7 +31,8 @@ import kotlin.math.roundToInt
 class BlockServiceImpl(
     val userRepository: UsersRepository,
     val blockRepository: BlockRepository,
-    val syncRepository: SyncRepository
+    val syncRepository: SyncRepository,
+    val alarmRepository: AlarmRepository
 ) : BlockService {
 
     companion object {
@@ -48,10 +46,11 @@ class BlockServiceImpl(
         val user = userRepository.findByEmail(email) ?: throw DodiException(ResultCode.NOT_FOUND)
 
         val todayDate = getTodayLocalDateStr(CountryCode.valueOf(user.countryCode!!))
-        println("todayDate = ${todayDate}")
+        println("오늘!!")
         var todayBlock = getBlockFromDateOrSave(email, todayDate, user, false)
         todayBlock.calculated = false
         todayBlock = syncBlockData(user, todayBlock, todayDate)
+        println("어제!!")
         val yesterdayBlock = getBlockFromDateOrSave(email, getYesterdayLocalDateStr(CountryCode.valueOf(user.countryCode!!)), user, true)
 
         val welcomeMessage = blockRepository.getWelcomeMessage(email, Category.WELCOME_MSG)
@@ -64,14 +63,16 @@ class BlockServiceImpl(
             message = generatePromoteActionMessage(message, todayBlock)
         }
 
+        val messages = alarmRepository.getAlarmsForProfile(email, todayDate).map { it.calSendDate(CountryCode.valueOf(user.countryCode!!)) }
         return HomeRes(
+            date = todayDate,
             welcomeMessage = message,
             yesterdayBlock = yesterdayBlock.blocks.removeSurrounding("[", "]")  // 양쪽의 대괄호 제거
                 .split(",")                   // 쉼표로 분리
                 .map { it.trim().toInt() }     // 각 요소를 정수로 변환
                 .toIntArray(),
             level = user.level!!,
-            interval = user.intervalTime!!,
+            interval = user.interval!!,
             blockCount = todayBlock.blockCount,
             block = todayBlock.blocks.removeSurrounding("[", "]")  // 양쪽의 대괄호 제거
                 .split(",")                   // 쉼표로 분리
@@ -89,11 +90,12 @@ class BlockServiceImpl(
                 .split(",")                   // 쉼표로 분리
                 .map { it.trim().toInt() }     // 각 요소를 정수로 변환
                 .toIntArray(),
-            exceededCount = todayBlock.exceededCount,
+            exceedCount = todayBlock.exceededCount,
             actionCount = todayBlock.actionCount,
             longestUsage = todayBlock.longestUsage,
             restSec = todayBlock.restSec,
-            pickupOnCount = todayBlock.pickupOnCount
+            pickupOnCount = todayBlock.pickupOnCount,
+            messages = messages
         )
     }
 
@@ -136,7 +138,7 @@ class BlockServiceImpl(
                         .map { it.trim().toInt() }
                         .toIntArray(),           // 필요한 값들을 추출하여 사용
                     longestUsage = blockOfMonth.longestUsage,
-                    exceededCount = blockOfMonth.exceededCount
+                    exceedCount = blockOfMonth.exceededCount
                 )
             } ?: BlockOfCalendar(
                 date = dateStr.toInt(), // 해당 날짜가 없는 경우 기본값으로 0 채우기
@@ -147,7 +149,7 @@ class BlockServiceImpl(
                     .map { it.trim().toInt() }
                     .toIntArray(),
                 longestUsage = 0,
-                exceededCount = 0
+                exceedCount = 0
             )
         }
 
