@@ -46,11 +46,9 @@ class BlockServiceImpl(
         val user = userRepository.findByEmail(email) ?: throw DodiException(ResultCode.NOT_FOUND)
 
         val todayDate = getTodayLocalDateStr(CountryCode.valueOf(user.countryCode!!))
-        println("오늘!!")
         var todayBlock = getBlockFromDateOrSave(email, todayDate, user, false)
         todayBlock.calculated = false
         todayBlock = syncBlockData(user, todayBlock, todayDate)
-        println("어제!!")
         val yesterdayBlock = getBlockFromDateOrSave(email, getYesterdayLocalDateStr(CountryCode.valueOf(user.countryCode!!)), user, true)
 
         val welcomeMessage = blockRepository.getWelcomeMessage(email, Category.WELCOME_MSG)
@@ -106,7 +104,6 @@ class BlockServiceImpl(
 
         val blockOfMonthCalculateList = blockRepository.getBlockOfMonthByCalculatedIsFalse(email, date)
         blockOfMonthCalculateList.forEach{block ->
-            println("createdDate = ${toDateTime(block.createdDate).format(dateFormatter)}")
             syncBlockData(user, block, toDateTime(block.createdDate).format(dateFormatter))
             block.calculated = true
         }

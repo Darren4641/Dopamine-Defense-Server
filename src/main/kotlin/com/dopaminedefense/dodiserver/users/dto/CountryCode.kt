@@ -26,11 +26,11 @@ enum class CountryCode (
 
         fun getYesterdayUtcDateStr() : String = OffsetDateTime.now(ZoneOffset.UTC).minusDays(1).format(CountryCode.dateFormatter)
 
-        fun getTodayLocalDateTimeStr(countryCode: CountryCode) : String = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of(countryCode.zone)).format(dateTimeFormatter)
+        fun getTodayLocalDateTimeStr(countryCode: CountryCode) : String = LocalDateTime.now(ZoneId.of(countryCode.zone)).format(dateFormatter).format(dateTimeFormatter)
 
-        fun getTodayLocalDateStr(countryCode: CountryCode) : String = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of(countryCode.zone)).format(dateFormatter)
+        fun getTodayLocalDateStr(countryCode: CountryCode) : String = LocalDateTime.now(ZoneId.of(countryCode.zone)).format(dateFormatter)
 
-        fun getYesterdayLocalDateStr(countryCode: CountryCode) : String = ZonedDateTime.of(LocalDateTime.now().minusDays(1), ZoneId.of(countryCode.zone)).format(dateFormatter)
+        fun getYesterdayLocalDateStr(countryCode: CountryCode) : String = LocalDateTime.now(ZoneId.of(countryCode.zone)).minusDays(1).format(dateFormatter)
 
 
         fun convertUtcToLocalTime(utcTime: LocalDateTime, countryCode: CountryCode): String {
